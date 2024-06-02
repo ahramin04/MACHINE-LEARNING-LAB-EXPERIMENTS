@@ -1,0 +1,53 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Sample data (replace with your dataset)
+data = np.array([[1, 2, 3],
+                 [4, 5, 6],
+                 [7, 8, 9],
+                 [10, 11, 12]])
+
+# Step 1: Standardize the data (mean=0, variance=1)
+mean = np.mean(data, axis=0)
+std_dev = np.std(data, axis=0)
+data_standardized = (data - mean) / std_dev
+
+# Step 2: Calculate the covariance matrix
+cov_matrix = np.cov(data_standardized, rowvar=False)
+
+# Step 3: Calculate the eigenvalues and eigenvectors of the covariance matrix
+eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
+
+# Step 4: Sort eigenvalues in descending order and arrange corresponding eigenvectors
+sorted_indices = np.argsort(eigenvalues)[::-1]
+eigenvalues = eigenvalues[sorted_indices]
+eigenvectors = eigenvectors[:, sorted_indices]
+
+# Step 5: Select the top k eigenvectors to reduce dimensions (k should be chosen based on explained variance)
+k = 2
+selected_eigenvectors = eigenvectors[:, :k]
+
+# Step 6: Project the data onto the new feature space
+reduced_data = np.dot(data_standardized, selected_eigenvectors)
+
+# Visualize the results
+sns.set(style="whitegrid")
+plt.figure(figsize=(8, 6))
+
+# Plot the original data
+plt.subplot(121)
+plt.scatter(data[:, 0], data[:, 1], label="Original Data")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.title("Original Data")
+
+# Plot the reduced data after PCA
+plt.subplot(122)
+plt.scatter(reduced_data[:, 0], reduced_data[:, 1], label="Reduced Data")
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+plt.title("Reduced Data after PCA")
+
+plt.tight_layout()
+plt.show()
