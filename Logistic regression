@@ -1,0 +1,59 @@
+import warnings
+warnings.filterwarnings("ignore")
+import pandas as pd
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import precision_score
+from sklearn.preprocessing import StandardScaler
+data=pd.read_csv(r"E:\sudhakar\heart.csv")
+print('The first 5 rows of the data set are:')
+print(data.head())
+dim=data.shape
+print('Dimensions of the data set are',dim)
+print('Statistics of the data are:')
+print(data.describe())
+print('Correlation matrix of the data set is:')
+print(data.corr())
+class_lbls=data['target'].unique()
+class_labels=[]
+for x in class_lbls:
+class_labels.append(str(x))
+print('Class labels are:')
+print(class_labels)
+sns.countplot(data['target'])
+col_names=data.columns
+feature_names=col_names[:-1]
+feature_names=list(feature_names)
+print('Feature names are:')
+print(feature_names)
+x_set = data.drop(['target'], axis=1)
+print('First 5 rows of features set are:')
+print(x_set.head())
+y_set=data[['target']]
+print('First 5 rows of features set are:')
+print(y_set.head())
+scaler=StandardScaler()
+x_train,x_test, y_train, y_test = train_test_split(x_set,y_set, test_size = 0.3)
+scaler.fit(x_train)
+x_train=scaler.transform(x_train)
+model = LogisticRegression()
+model.fit(x_train, y_train)
+x_test=scaler.transform(x_test)
+y_pred=model.predict(x_test)
+print('Predicted class labels for test data are:')
+print(y_pred)
+print("Accuracy:",accuracy_score(y_test, y_pred))
+print("Precision:",precision_score(y_test, y_pred))
+print("Recall:",recall_score(y_test, y_pred))
+print(classification_report(y_test,y_pred,target_names=class_labels))
+cm=confusion_matrix(y_test,y_pred)
+df_cm = pd.DataFrame(cm, columns=class_labels, index = class_labels)
+df_cm.index.name = 'Actual'
+df_cm.columns.name = 'Predicted'
+sns.set(font_scale=1.5)
+sns.heatmap(df_cm, annot=True,cmap="Blues",fmt='d')
