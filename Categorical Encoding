@@ -1,0 +1,12 @@
+import pandas as pd
+# Sample categorical data
+
+data = {'fruit': ['apple', 'orange', 'banana', 'apple']}
+
+df = pd.DataFrame(data)
+
+# One Hot Encoding using Pandas get_dummies
+
+encoded_df = pd.get_dummies(df, columns=['fruit'])
+
+print(encoded_df)
