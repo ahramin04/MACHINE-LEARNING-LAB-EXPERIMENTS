@@ -1,0 +1,41 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the Heart Disease Data Set
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/heart-disease/processed.cleveland.data"
+column_names = ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca", "thal", "target"]
+heart_data = pd.read_csv(url, header=None, names=column_names, na_values="?")
+
+# Display the first few rows of the dataset
+print(heart_data.head())
+
+# Summary statistics of numerical features
+print(heart_data.describe())
+
+# Info about the dataset, including data types and missing values
+print(heart_data.info())
+
+# Distribution of the target variable
+sns.countplot(x='target', data=heart_data)
+plt.title('Distribution of Target Variable')
+plt.show()
+
+# Pairplot to visualize relationships between numerical features
+sns.pairplot(heart_data, hue='target')
+plt.suptitle('Pairplot of Numerical Features', y=1.02)
+plt.show()
+
+# Correlation heatmap to check for feature correlations
+corr_matrix = heart_data.corr()
+plt.figure(figsize=(12, 8))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt=".2f")
+plt.title('Correlation Heatmap')
+plt.show()
+
+# Boxplots for individual features
+features = ["age", "trestbps", "chol", "thalach", "oldpeak"]  # Select a subset of features
+for feature in features:
+    sns.boxplot(x='target', y=feature, data=heart_data)
+    plt.title(f'Boxplot of {feature} by Target')
+    plt.show()
